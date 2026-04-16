@@ -1,10 +1,9 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
-import { CreatureCard } from '@/components/CreatureCard';
-import { Leaderboard } from '@/components/Leaderboard';
-import { TriviaGame } from '@/components/TriviaGame';
-import { WordChainGame } from '@/components/WordChainGame';
+import { CreatureCard, Leaderboard } from '@/features/arena';
+import { TriviaGame, WordChainGame } from '@/features/games';
+import { Badge } from '@/components/ui';
 
 export const Route = createFileRoute('/arena')({
   head: () => ({
@@ -33,22 +32,16 @@ function ArenaPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
       <header className="sticky top-0 z-20 bg-card/80 backdrop-blur-lg border-b border-border px-4 py-3 flex items-center justify-between">
         <h1 className="font-heading font-black text-lg">
           Critter<span className="text-primary">Zone</span>
         </h1>
         <div className="flex items-center gap-2">
-          <span className="bg-earth-bg text-earth text-xs font-bold px-2.5 py-1 rounded-full">
-            🟢 {players.length} online
-          </span>
-          {profile && (
-            <span className="text-xl">{profile.creature.emoji}</span>
-          )}
+          <Badge element="earth">🟢 {players.length} online</Badge>
+          {profile && <span className="text-xl">{profile.creature.emoji}</span>}
         </div>
       </header>
 
-      {/* Content */}
       <main className="flex-1 px-4 py-4 pb-20 max-w-4xl mx-auto w-full">
         <AnimatePresence mode="wait">
           {activeTab === 'arena' && (
@@ -89,7 +82,6 @@ function ArenaPage() {
               ) : (
                 <div className="space-y-4">
                   <h2 className="font-heading font-bold text-xl text-foreground">Mini Games</h2>
-
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -98,11 +90,8 @@ function ArenaPage() {
                   >
                     <div className="text-3xl mb-2">🎯</div>
                     <h3 className="font-heading font-bold text-lg text-foreground">Trivia Blitz</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      5 rapid-fire questions · 15 seconds each · Earn up to 100 XP
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">5 rapid-fire questions · 15 seconds each · Earn up to 100 XP</p>
                   </motion.button>
-
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -111,9 +100,7 @@ function ArenaPage() {
                   >
                     <div className="text-3xl mb-2">🔗</div>
                     <h3 className="font-heading font-bold text-lg text-foreground">Word Chain</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Chain words together · 10 seconds per turn · 15 XP per word
-                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">Chain words together · 10 seconds per turn · 15 XP per word</p>
                   </motion.button>
                 </div>
               )}
@@ -128,7 +115,6 @@ function ArenaPage() {
         </AnimatePresence>
       </main>
 
-      {/* Bottom tab bar */}
       <nav className="fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-lg border-t border-border z-20">
         <div className="flex max-w-4xl mx-auto">
           {tabs.map((tab) => (
@@ -136,7 +122,9 @@ function ArenaPage() {
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`flex-1 py-3 text-center text-sm font-heading font-bold transition-colors ${
-                activeTab === tab.key ? 'tab-active' : 'tab-inactive'
+                activeTab === tab.key
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-muted-foreground'
               }`}
             >
               {tab.label}

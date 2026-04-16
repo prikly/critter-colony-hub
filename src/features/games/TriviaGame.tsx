@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore, type TriviaQuestion } from '@/store/gameStore';
 import { generateTriviaQuestions } from '@/lib/gemini';
+import { Button } from '@/components/ui';
 
 export function TriviaGame() {
   const { triviaQuestions, triviaIndex, triviaScore, startTrivia, answerTrivia, nextTriviaQuestion, setCurrentGame } = useGameStore();
@@ -64,7 +65,7 @@ export function TriviaGame() {
         <h3 className="font-heading font-bold text-2xl text-foreground mb-2">Trivia Complete!</h3>
         <p className="text-lg text-muted-foreground mb-1">Your score</p>
         <p className="font-heading font-bold text-4xl text-primary mb-6">{triviaScore} XP</p>
-        <button onClick={() => setCurrentGame(null)} className="btn-primary">Back to Games</button>
+        <Button onClick={() => setCurrentGame(null)}>Back to Games</Button>
       </motion.div>
     );
   }

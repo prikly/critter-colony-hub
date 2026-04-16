@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getElementColor, type Creature } from '@/lib/creatures';
 import { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
+import { Card } from '@/components/ui';
+import { Badge } from '@/components/ui';
 
 interface CreatureCardProps {
   uid: string;
@@ -37,20 +39,13 @@ export function CreatureCard({ uid, displayName, college, iceBreaker, creature, 
   };
 
   return (
-    <motion.div
-      className={`creature-card relative overflow-hidden ${colors.bg}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      layout
-    >
+    <Card variant="creature" className={`relative overflow-hidden ${colors.bg}`}>
       {isOwn && (
         <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-[10px] font-heading font-bold px-2 py-0.5 rounded-full">
           YOU
         </div>
       )}
 
-      {/* Floating reactions */}
       <AnimatePresence>
         {floatingReactions.map((r) => (
           <motion.div
@@ -66,7 +61,6 @@ export function CreatureCard({ uid, displayName, college, iceBreaker, creature, 
         ))}
       </AnimatePresence>
 
-      {/* Creature emoji */}
       <div className="flex flex-col items-center gap-1.5 mb-3">
         <motion.div
           className="text-5xl leading-none"
@@ -76,12 +70,11 @@ export function CreatureCard({ uid, displayName, college, iceBreaker, creature, 
           {creature.emoji}
         </motion.div>
         <span className="font-heading font-bold text-sm text-foreground">{creatureName}</span>
-        <span className={colors.badge}>
+        <Badge element={creature.element}>
           {creature.element} · {creature.trait}
-        </span>
+        </Badge>
       </div>
 
-      {/* Player info */}
       <div className="text-center space-y-0.5">
         <p className="font-heading font-bold text-sm text-foreground truncate">{displayName}</p>
         <p className="text-xs text-muted-foreground truncate">{college}</p>
@@ -90,7 +83,6 @@ export function CreatureCard({ uid, displayName, college, iceBreaker, creature, 
         )}
       </div>
 
-      {/* Reaction bar */}
       <div className="flex justify-center gap-1.5 mt-3">
         {REACTION_EMOJIS.map(({ key, emoji }) => (
           <motion.button
@@ -104,6 +96,6 @@ export function CreatureCard({ uid, displayName, college, iceBreaker, creature, 
           </motion.button>
         ))}
       </div>
-    </motion.div>
+    </Card>
   );
 }

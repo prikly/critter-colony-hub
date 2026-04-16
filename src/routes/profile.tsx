@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { assignCreature, getElementColor } from '@/lib/creatures';
 import { generateIceBreakers } from '@/lib/gemini';
+import { Button, Input, Badge, Chip } from '@/components/ui';
 
 export const Route = createFileRoute('/profile')({
   head: () => ({
@@ -72,7 +73,6 @@ function ProfilePage() {
           Your Creature Awaits
         </h1>
 
-        {/* Creature preview */}
         <motion.div
           className={`${colors.bg} rounded-2xl p-6 text-center mb-6`}
           initial={{ scale: 0.9 }}
@@ -93,21 +93,19 @@ function ProfilePage() {
             placeholder={creature.name}
           />
           <div className="mt-2">
-            <span className={colors.badge}>
+            <Badge element={creature.element}>
               {creature.element} · {creature.trait}
-            </span>
+            </Badge>
           </div>
         </motion.div>
 
-        {/* Profile form */}
         <div className="space-y-3">
-          <input className="input-field" placeholder="Your display name *" value={name} onChange={(e) => setName(e.target.value)} />
-          <input className="input-field" placeholder="College / Company" value={college} onChange={(e) => setCollege(e.target.value)} />
-          <input className="input-field" placeholder="Designation / Year of study" value={designation} onChange={(e) => setDesignation(e.target.value)} />
+          <Input placeholder="Your display name *" value={name} onChange={(e) => setName(e.target.value)} />
+          <Input placeholder="College / Company" value={college} onChange={(e) => setCollege(e.target.value)} />
+          <Input placeholder="Designation / Year of study" value={designation} onChange={(e) => setDesignation(e.target.value)} />
 
           <div>
-            <input
-              className="input-field"
+            <Input
               placeholder="Your ice-breaker line ✨"
               value={iceBreaker}
               onChange={(e) => setIceBreaker(e.target.value)}
@@ -130,26 +128,18 @@ function ProfilePage() {
                 animate={{ opacity: 1, y: 0 }}
               >
                 {suggestions.map((s, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setIceBreaker(s)}
-                    className="chip-selectable text-xs"
-                  >
+                  <Chip key={i} onClick={() => setIceBreaker(s)} className="text-xs">
                     {s}
-                  </button>
+                  </Chip>
                 ))}
               </motion.div>
             )}
           </div>
         </div>
 
-        <button
-          onClick={handleSubmit}
-          disabled={!name.trim()}
-          className="btn-primary w-full mt-6 text-lg disabled:opacity-50"
-        >
+        <Button onClick={handleSubmit} disabled={!name.trim()} className="w-full mt-6" size="lg">
           Enter the Arena 🏟️
-        </button>
+        </Button>
       </motion.div>
     </div>
   );

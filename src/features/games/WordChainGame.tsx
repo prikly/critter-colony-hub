@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '@/store/gameStore';
 import { validateWordChain } from '@/lib/gemini';
+import { Button, Input } from '@/components/ui';
 
 export function WordChainGame() {
   const { wordChain, addWordToChain, setCurrentGame, addXp } = useGameStore();
@@ -19,7 +20,7 @@ export function WordChainGame() {
       setTimer((t) => {
         if (t <= 1) {
           setStrikes((s) => s + 1);
-          setFeedback({ valid: false, reason: 'Time\'s up!' });
+          setFeedback({ valid: false, reason: "Time's up!" });
           setTimeout(() => { setFeedback(null); resetTimer(); }, 1200);
           return 10;
         }
@@ -64,7 +65,7 @@ export function WordChainGame() {
             </span>
           ))}
         </div>
-        <button onClick={() => setCurrentGame(null)} className="btn-primary">Back to Games</button>
+        <Button onClick={() => setCurrentGame(null)}>Back to Games</Button>
       </motion.div>
     );
   }
@@ -83,7 +84,6 @@ export function WordChainGame() {
         </span>
       </div>
 
-      {/* Word chain display */}
       <div className="flex flex-wrap gap-1.5 min-h-[3rem] bg-muted rounded-xl p-3">
         <AnimatePresence>
           {wordChain.map((w, i) => (
@@ -108,22 +108,20 @@ export function WordChainGame() {
         </p>
       )}
 
-      {/* Input */}
       <div className="flex gap-2">
-        <input
-          className="input-field flex-1"
+        <Input
+          className="flex-1"
           placeholder={lastLetter ? `Type a word starting with "${lastLetter}"...` : 'Type any word to begin!'}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
           disabled={loading}
         />
-        <button onClick={handleSubmit} disabled={loading || !input.trim()} className="btn-primary px-4 disabled:opacity-50">
+        <Button onClick={handleSubmit} disabled={loading || !input.trim()} size="md" className="px-4">
           {loading ? '...' : '→'}
-        </button>
+        </Button>
       </div>
 
-      {/* Feedback */}
       <AnimatePresence>
         {feedback && (
           <motion.div

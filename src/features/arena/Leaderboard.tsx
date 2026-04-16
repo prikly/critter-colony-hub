@@ -7,9 +7,9 @@ export function Leaderboard() {
   const sorted = [...players].sort((a, b) => b.xp - a.xp);
 
   const rankClass = (i: number) => {
-    if (i === 0) return 'rank-gold border-2';
-    if (i === 1) return 'rank-silver border-2';
-    if (i === 2) return 'rank-bronze border-2';
+    if (i === 0) return 'bg-gradient-to-r from-amber-100 to-yellow-50 border-amber-300 border-2';
+    if (i === 1) return 'bg-gradient-to-r from-gray-100 to-slate-50 border-gray-300 border-2';
+    if (i === 2) return 'bg-gradient-to-r from-orange-100 to-amber-50 border-orange-300 border-2';
     return 'bg-card border border-border';
   };
 

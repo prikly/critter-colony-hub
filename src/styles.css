@@ -144,16 +144,16 @@
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold font-heading uppercase tracking-wide;
   }
   .element-badge-fire {
-    @apply element-badge bg-fire-bg text-fire;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold font-heading uppercase tracking-wide bg-fire-bg text-fire;
   }
   .element-badge-water {
-    @apply element-badge bg-water-bg text-water;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold font-heading uppercase tracking-wide bg-water-bg text-water;
   }
   .element-badge-earth {
-    @apply element-badge bg-earth-bg text-earth;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold font-heading uppercase tracking-wide bg-earth-bg text-earth;
   }
   .element-badge-thunder {
-    @apply element-badge bg-thunder-bg text-thunder;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold font-heading uppercase tracking-wide bg-thunder-bg text-thunder;
   }
   .creature-card {
     @apply bg-card rounded-2xl p-4 border border-border shadow-sm transition-all duration-200 hover:shadow-md;

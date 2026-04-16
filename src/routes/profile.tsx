@@ -62,44 +62,60 @@ function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-start px-4 py-8 relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] via-transparent to-transparent pointer-events-none" />
+
       <motion.div
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <h1 className="font-heading font-black text-2xl text-foreground text-center mb-6">
-          Your Creature Awaits
-        </h1>
-
-        <motion.div
-          className={`${colors.bg} rounded-2xl p-6 text-center mb-6`}
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200 }}
+        <motion.h1
+          className="font-heading font-black text-3xl text-foreground text-center mb-8"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
         >
+          Your Creature Awaits
+        </motion.h1>
+
+        {/* Creature preview card */}
+        <motion.div
+          className={`${colors.bg} rounded-3xl p-8 text-center mb-8 border border-border/50 shadow-card relative overflow-hidden`}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 200, delay: 0.15 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent pointer-events-none rounded-3xl" />
+
           <motion.div
-            className="text-6xl leading-none mb-2"
-            animate={{ y: [0, -10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+            className="text-7xl leading-none mb-3 drop-shadow-md relative"
+            animate={{ y: [0, -12, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
           >
             {creature.emoji}
           </motion.div>
           <input
-            className="bg-transparent text-center font-heading font-bold text-xl text-foreground border-b-2 border-dashed border-foreground/20 focus:border-primary focus:outline-none pb-1 w-48 mx-auto"
+            className="bg-transparent text-center font-heading font-bold text-xl text-foreground border-b-2 border-dashed border-foreground/15 focus:border-primary focus:outline-none pb-1 w-48 mx-auto relative transition-colors duration-200"
             value={creatureName}
             onChange={(e) => setCreatureName(e.target.value)}
             placeholder={creature.name}
           />
-          <div className="mt-2">
-            <Badge element={creature.element}>
+          <div className="mt-3 relative">
+            <Badge element={creature.element} glow>
               {creature.element} · {creature.trait}
             </Badge>
           </div>
         </motion.div>
 
-        <div className="space-y-3">
+        {/* Form fields */}
+        <motion.div
+          className="space-y-3"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
           <Input placeholder="Your display name *" value={name} onChange={(e) => setName(e.target.value)} />
           <Input placeholder="College / Company" value={college} onChange={(e) => setCollege(e.target.value)} />
           <Input placeholder="Designation / Year of study" value={designation} onChange={(e) => setDesignation(e.target.value)} />
@@ -110,36 +126,51 @@ function ProfilePage() {
               value={iceBreaker}
               onChange={(e) => setIceBreaker(e.target.value)}
             />
-            <button
+            <motion.button
               onClick={handleSuggest}
               disabled={loadingSuggestions}
-              className="mt-2 text-sm font-medium text-primary hover:underline disabled:opacity-50 flex items-center gap-1"
+              className="mt-2.5 text-sm font-semibold text-primary hover:text-primary/80 disabled:opacity-50 flex items-center gap-1.5 transition-colors"
+              whileHover={{ x: 2 }}
+              whileTap={{ scale: 0.97 }}
             >
               {loadingSuggestions ? (
                 <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}>✨</motion.span>
-              ) : '✨'}{' '}
+              ) : '✨'}
               Suggest with AI
-            </button>
+            </motion.button>
 
             {suggestions.length > 0 && (
               <motion.div
-                className="flex flex-wrap gap-2 mt-2"
+                className="flex flex-wrap gap-2 mt-3"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
                 {suggestions.map((s, i) => (
-                  <Chip key={i} onClick={() => setIceBreaker(s)} className="text-xs">
-                    {s}
-                  </Chip>
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <Chip onClick={() => setIceBreaker(s)} className="text-xs">
+                      {s}
+                    </Chip>
+                  </motion.div>
                 ))}
               </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
 
-        <Button onClick={handleSubmit} disabled={!name.trim()} className="w-full mt-6" size="lg">
-          Enter the Arena 🏟️
-        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Button onClick={handleSubmit} disabled={!name.trim()} className="w-full mt-8" size="lg">
+            Enter the Arena 🏟️
+          </Button>
+        </motion.div>
       </motion.div>
     </div>
   );

@@ -51,61 +51,121 @@ export function TriviaGame() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 gap-4">
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }} className="text-4xl">🎯</motion.div>
-        <p className="font-heading font-bold text-foreground">Loading Trivia...</p>
-      </div>
+      <motion.div
+        className="flex flex-col items-center justify-center py-16 gap-5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <motion.div
+          animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+          transition={{ rotate: { repeat: Infinity, duration: 1.5, ease: 'linear' }, scale: { repeat: Infinity, duration: 0.8 } }}
+          className="text-5xl"
+        >
+          🎯
+        </motion.div>
+        <p className="font-heading font-bold text-foreground text-lg">Loading Trivia...</p>
+        <div className="w-32 h-1 bg-muted rounded-full overflow-hidden">
+          <motion.div
+            className="h-full bg-primary rounded-full"
+            animate={{ x: ['-100%', '100%'] }}
+            transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
+          />
+        </div>
+      </motion.div>
     );
   }
 
   if (!currentQ) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
-        <div className="text-5xl mb-4">🎉</div>
-        <h3 className="font-heading font-bold text-2xl text-foreground mb-2">Trivia Complete!</h3>
-        <p className="text-lg text-muted-foreground mb-1">Your score</p>
-        <p className="font-heading font-bold text-4xl text-primary mb-6">{triviaScore} XP</p>
-        <Button onClick={() => setCurrentGame(null)}>Back to Games</Button>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200 }}
+        className="text-center py-16"
+      >
+        <motion.div
+          className="text-6xl mb-5"
+          animate={{ scale: [1, 1.15, 1], rotate: [0, 5, -5, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+        >
+          🎉
+        </motion.div>
+        <h3 className="font-heading font-black text-3xl text-foreground mb-2">Trivia Complete!</h3>
+        <p className="text-muted-foreground mb-1">Your score</p>
+        <motion.p
+          className="font-heading font-black text-5xl text-gradient-primary mb-8"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, delay: 0.2 }}
+        >
+          {triviaScore} XP
+        </motion.p>
+        <Button onClick={() => setCurrentGame(null)} size="lg">Back to Games</Button>
       </motion.div>
     );
   }
 
+  const timerPercent = (timer / 15) * 100;
+  const isUrgent = timer <= 5;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
+      {/* Header bar */}
       <div className="flex items-center justify-between">
-        <span className="font-heading font-bold text-sm text-muted-foreground">
+        <span className="font-heading font-bold text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
           Q{triviaIndex + 1}/{triviaQuestions.length}
         </span>
-        <span className={`font-heading font-bold text-lg ${timer <= 5 ? 'text-destructive' : 'text-foreground'}`}>
-          ⏱ {timer}s
-        </span>
-        <span className="font-heading font-bold text-sm text-primary">{triviaScore} XP</span>
+        <motion.span
+          className={`font-heading font-black text-xl tabular-nums ${isUrgent ? 'text-destructive' : 'text-foreground'}`}
+          animate={isUrgent ? { scale: [1, 1.1, 1] } : {}}
+          transition={{ repeat: Infinity, duration: 0.5 }}
+        >
+          {timer}s
+        </motion.span>
+        <span className="font-heading font-bold text-sm text-primary bg-primary/10 px-3 py-1 rounded-full">{triviaScore} XP</span>
       </div>
 
-      <div className="w-full bg-muted rounded-full h-1.5">
-        <motion.div className="bg-primary h-1.5 rounded-full" animate={{ width: `${(timer / 15) * 100}%` }} transition={{ duration: 0.3 }} />
+      {/* Timer bar */}
+      <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+        <motion.div
+          className={`h-full rounded-full transition-colors duration-300 ${isUrgent ? 'bg-destructive' : 'bg-primary'}`}
+          animate={{ width: `${timerPercent}%` }}
+          transition={{ duration: 0.3 }}
+        />
       </div>
 
+      {/* Question */}
       <AnimatePresence mode="wait">
-        <motion.div key={triviaIndex} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
-          <p className="font-heading font-bold text-lg text-foreground mb-4">{currentQ.question}</p>
-          <div className="grid grid-cols-1 gap-2.5">
+        <motion.div
+          key={triviaIndex}
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <p className="font-heading font-bold text-lg text-foreground mb-5 leading-relaxed">{currentQ.question}</p>
+          <div className="grid grid-cols-1 gap-3">
             {currentQ.options.map((opt, i) => {
-              let bg = 'bg-card border-2 border-border';
+              let styles = 'bg-card border border-border hover:border-primary/30 hover:shadow-card';
               if (answered !== null) {
-                if (i === currentQ.correctIndex) bg = 'bg-earth-bg border-2 border-earth';
-                else if (i === answered) bg = 'bg-fire-bg border-2 border-fire';
+                if (i === currentQ.correctIndex) styles = 'bg-earth-bg border-2 border-earth shadow-card';
+                else if (i === answered) styles = 'bg-fire-bg border-2 border-fire shadow-card';
+                else styles = 'bg-card border border-border opacity-50';
               }
               return (
                 <motion.button
                   key={i}
-                  whileTap={{ scale: 0.97 }}
-                  className={`${bg} rounded-xl px-4 py-3 text-left font-medium transition-all text-sm`}
+                  whileHover={answered === null ? { scale: 1.01, x: 4 } : {}}
+                  whileTap={answered === null ? { scale: 0.98 } : {}}
+                  className={`${styles} rounded-2xl px-5 py-3.5 text-left font-medium transition-all duration-200 text-sm`}
                   onClick={() => handleAnswer(i)}
                   disabled={answered !== null}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
                 >
-                  <span className="font-heading font-bold text-muted-foreground mr-2">
-                    {String.fromCharCode(65 + i)}.
+                  <span className="font-heading font-black text-muted-foreground/60 mr-2.5 text-base">
+                    {String.fromCharCode(65 + i)}
                   </span>
                   {opt}
                 </motion.button>

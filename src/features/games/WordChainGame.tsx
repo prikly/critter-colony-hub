@@ -49,86 +49,139 @@ export function WordChainGame() {
     setTimeout(() => setFeedback(null), 1500);
   };
 
+  const isUrgent = timer <= 3;
+
   if (wordChain.length >= 20 || strikes >= 3) {
     return (
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
-        <div className="text-5xl mb-4">{strikes >= 3 ? '💥' : '🎉'}</div>
-        <h3 className="font-heading font-bold text-2xl text-foreground mb-2">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200 }}
+        className="text-center py-16"
+      >
+        <motion.div
+          className="text-6xl mb-5"
+          animate={{ scale: [1, 1.15, 1] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+        >
+          {strikes >= 3 ? '💥' : '🎉'}
+        </motion.div>
+        <h3 className="font-heading font-black text-3xl text-foreground mb-2">
           {strikes >= 3 ? 'Game Over!' : 'Chain Complete!'}
         </h3>
-        <p className="text-muted-foreground mb-2">Chain length: {wordChain.length} words</p>
-        <p className="font-heading font-bold text-2xl text-primary mb-6">{wordChain.length * 15} XP earned</p>
-        <div className="flex flex-wrap justify-center gap-1.5 mb-6">
+        <p className="text-muted-foreground mb-2">Chain length: <span className="font-bold">{wordChain.length} words</span></p>
+        <motion.p
+          className="font-heading font-black text-4xl text-gradient-primary mb-8"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', delay: 0.2 }}
+        >
+          {wordChain.length * 15} XP
+        </motion.p>
+        <div className="flex flex-wrap justify-center gap-1.5 mb-8">
           {wordChain.map((w, i) => (
-            <span key={i} className="bg-accent text-accent-foreground rounded-full px-3 py-1 text-xs font-medium">
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.05 }}
+              className="bg-accent text-accent-foreground rounded-full px-3 py-1 text-xs font-medium"
+            >
               {w}
-            </span>
+            </motion.span>
           ))}
         </div>
-        <Button onClick={() => setCurrentGame(null)}>Back to Games</Button>
+        <Button onClick={() => setCurrentGame(null)} size="lg">Back to Games</Button>
       </motion.div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
+      {/* Status bar */}
       <div className="flex items-center justify-between">
-        <span className="font-heading font-bold text-sm text-muted-foreground">
-          Chain: {wordChain.length}/20
+        <span className="font-heading font-bold text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+          🔗 {wordChain.length}/20
         </span>
-        <span className={`font-heading font-bold text-lg ${timer <= 3 ? 'text-destructive' : 'text-foreground'}`}>
-          ⏱ {timer}s
-        </span>
-        <span className="font-heading font-bold text-sm text-destructive">
+        <motion.span
+          className={`font-heading font-black text-xl tabular-nums ${isUrgent ? 'text-destructive' : 'text-foreground'}`}
+          animate={isUrgent ? { scale: [1, 1.1, 1] } : {}}
+          transition={{ repeat: Infinity, duration: 0.5 }}
+        >
+          {timer}s
+        </motion.span>
+        <span className="font-heading font-bold text-sm text-destructive bg-destructive/10 px-3 py-1 rounded-full">
           ❌ {strikes}/3
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 min-h-[3rem] bg-muted rounded-xl p-3">
+      {/* Timer bar */}
+      <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+        <motion.div
+          className={`h-full rounded-full transition-colors duration-300 ${isUrgent ? 'bg-destructive' : 'bg-primary'}`}
+          animate={{ width: `${(timer / 10) * 100}%` }}
+          transition={{ duration: 0.3 }}
+        />
+      </div>
+
+      {/* Word chain display */}
+      <div className="flex flex-wrap gap-2 min-h-[4rem] bg-surface rounded-2xl p-4 border border-border">
         <AnimatePresence>
           {wordChain.map((w, i) => (
             <motion.span
               key={`${w}-${i}`}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-medium"
+              initial={{ opacity: 0, scale: 0.5, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+              className="bg-primary text-primary-foreground rounded-full px-3.5 py-1.5 text-sm font-bold shadow-sm"
             >
               {w}
             </motion.span>
           ))}
         </AnimatePresence>
         {wordChain.length === 0 && (
-          <span className="text-muted-foreground text-sm">Type any word to start the chain!</span>
+          <span className="text-muted-foreground text-sm flex items-center">Type any word to start the chain!</span>
         )}
       </div>
 
       {lastLetter && (
-        <p className="text-center font-heading font-bold text-foreground">
-          Next word must start with: <span className="text-primary text-xl">{lastLetter}</span>
-        </p>
+        <motion.p
+          className="text-center font-heading font-bold text-foreground"
+          key={lastLetter}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          Next word starts with: <span className="text-gradient-primary text-2xl font-black">{lastLetter}</span>
+        </motion.p>
       )}
 
+      {/* Input */}
       <div className="flex gap-2">
         <Input
           className="flex-1"
-          placeholder={lastLetter ? `Type a word starting with "${lastLetter}"...` : 'Type any word to begin!'}
+          placeholder={lastLetter ? `Word starting with "${lastLetter}"...` : 'Type any word to begin!'}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
           disabled={loading}
         />
-        <Button onClick={handleSubmit} disabled={loading || !input.trim()} size="md" className="px-4">
-          {loading ? '...' : '→'}
+        <Button onClick={handleSubmit} disabled={loading || !input.trim()} className="px-5">
+          {loading ? (
+            <motion.span animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8 }}>⏳</motion.span>
+          ) : '→'}
         </Button>
       </div>
 
+      {/* Feedback */}
       <AnimatePresence>
         {feedback && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className={`text-center font-heading font-bold text-sm rounded-xl py-2 ${feedback.valid ? 'bg-earth-bg text-earth' : 'bg-fire-bg text-fire'}`}
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -5 }}
+            className={`text-center font-heading font-bold text-sm rounded-2xl py-3 px-4 ${
+              feedback.valid ? 'bg-earth-bg text-earth border border-earth/20' : 'bg-fire-bg text-fire border border-fire/20'
+            }`}
           >
             {feedback.valid ? '✅' : '❌'} {feedback.reason}
           </motion.div>

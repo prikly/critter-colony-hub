@@ -2,15 +2,18 @@ import { forwardRef, type HTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'creature';
+  variant?: 'default' | 'creature' | 'glass';
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', children, ...props }, ref) => {
     const variants: Record<string, string> = {
-      default: 'bg-card rounded-2xl p-4 border border-border shadow-sm',
+      default:
+        'bg-card rounded-2xl p-4 border border-border shadow-card transition-all duration-300',
       creature:
-        'bg-card rounded-2xl p-4 border border-border shadow-sm transition-all duration-200 hover:shadow-md',
+        'bg-card rounded-2xl p-4 border border-border shadow-card transition-all duration-300 hover:shadow-elevated hover:-translate-y-1',
+      glass:
+        'glass rounded-2xl p-4 border border-border/50 shadow-card transition-all duration-300',
     };
 
     return (

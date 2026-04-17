@@ -15,6 +15,7 @@ interface CreatureCardProps {
   xp: number;
   isOwn?: boolean;
   index?: number;
+  onClick?: () => void;
 }
 
 const REACTION_EMOJIS = [
@@ -24,7 +25,7 @@ const REACTION_EMOJIS = [
   { key: 'fire' as const, emoji: '🔥' },
 ];
 
-export function CreatureCard({ uid, displayName, college, iceBreaker, creature, creatureName, reactions, isOwn, index = 0 }: CreatureCardProps) {
+export function CreatureCard({ uid, displayName, college, iceBreaker, creature, creatureName, reactions, isOwn, index = 0, onClick }: CreatureCardProps) {
   const [floatingReactions, setFloatingReactions] = useState<Array<{ id: number; emoji: string }>>([]);
   const addReaction = useGameStore((s) => s.addReaction);
   const colors = getElementColor(creature.element);
@@ -43,6 +44,8 @@ export function CreatureCard({ uid, displayName, college, iceBreaker, creature, 
       initial={{ opacity: 0, y: 24, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.4, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}
+      onClick={onClick}
+      className={onClick ? 'cursor-pointer' : ''}
     >
       <Card variant="creature" className={`relative overflow-hidden ${colors.bg} group`}>
         {/* Subtle gradient overlay on hover */}
@@ -106,8 +109,11 @@ export function CreatureCard({ uid, displayName, college, iceBreaker, creature, 
               key={key}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 1.4 }}
-              className="flex items-center gap-0.5 bg-background/60 backdrop-blur-sm rounded-full px-2 py-1 text-sm hover:bg-background/90 transition-all duration-200 border border-transparent hover:border-border/50"
-              onClick={() => handleReaction(key, emoji)}
+              className="flex items-center gap-0.5 bg-background/60 backdrop-blur-sm rounded-full px-2 py-1 text-sm hover:bg-background/90 transition-all duration-200 border border-transparent hover:border-border/50 relative z-20"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleReaction(key, emoji);
+              }}
             >
               <span className="transition-transform duration-200">{emoji}</span>
               <span className="text-[10px] text-muted-foreground font-semibold tabular-nums">{reactions[key]}</span>

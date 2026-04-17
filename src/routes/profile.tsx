@@ -22,6 +22,8 @@ function ProfilePage() {
 
   const [name, setName] = useState('');
   const [college, setCollege] = useState('');
+  const [program, setProgram] = useState('');
+  const [techStack, setTechStack] = useState('');
   const [designation, setDesignation] = useState('');
   const [iceBreaker, setIceBreaker] = useState('');
   const [creatureName, setCreatureName] = useState('');
@@ -54,6 +56,8 @@ function ProfilePage() {
     setProfile({
       displayName: name.trim(),
       college: college.trim(),
+      program: program.trim(),
+      techStack: techStack.trim(),
       designation: designation.trim(),
       iceBreaker: iceBreaker.trim(),
       creatureName: creatureName.trim() || creature.name,
@@ -118,6 +122,8 @@ function ProfilePage() {
         >
           <Input placeholder="Your display name *" value={name} onChange={(e) => setName(e.target.value)} />
           <Input placeholder="College / Company" value={college} onChange={(e) => setCollege(e.target.value)} />
+          <Input placeholder="Program / Course" value={program} onChange={(e) => setProgram(e.target.value)} />
+          <Input placeholder="Tech Stack (e.g., React, Node)" value={techStack} onChange={(e) => setTechStack(e.target.value)} />
           <Input placeholder="Designation / Year of study" value={designation} onChange={(e) => setDesignation(e.target.value)} />
 
           <div>

@@ -6,6 +6,8 @@ export interface PlayerProfile {
   uid: string;
   displayName: string;
   college: string;
+  program?: string;
+  techStack?: string;
   designation: string;
   iceBreaker: string;
   creature: Creature;
@@ -48,6 +50,7 @@ interface GameState {
   // Actions
   login: (method: 'google' | 'eventId', eventId?: string) => void;
   setProfile: (profile: Omit<PlayerProfile, 'uid' | 'creature' | 'xp' | 'reactions' | 'eventId'>) => void;
+  updateProfile: (profile: Partial<Omit<PlayerProfile, 'uid' | 'creature' | 'xp' | 'reactions' | 'eventId'>>) => void;
   setActiveTab: (tab: 'arena' | 'play' | 'leaderboard') => void;
   addReaction: (targetUid: string, type: keyof PlayerProfile['reactions']) => void;
   startTrivia: (questions: TriviaQuestion[]) => void;
@@ -65,12 +68,12 @@ function generateUid(): string {
 // Demo players for showcase
 function generateDemoPlayers(eventId: string): PlayerProfile[] {
   const names = [
-    { name: 'Aria Chen', college: 'MIT', designation: 'CS Junior', ice: 'I debug code in my dreams 💭' },
-    { name: 'Dev Sharma', college: 'IIT Delhi', designation: 'ML Engineer', ice: 'My neural nets have feelings too 🤖' },
-    { name: 'Luna Park', college: 'Stanford', designation: 'Design Lead', ice: 'Pixels are my love language 🎨' },
-    { name: 'Kai Tanaka', college: 'Tokyo U', designation: 'Full Stack Dev', ice: 'I speak fluent JavaScript ☕' },
-    { name: 'Zara Ahmed', college: 'Oxford', designation: 'Data Scientist', ice: 'I find patterns in chaos 📊' },
-    { name: 'Rio Santos', college: 'USP Brazil', designation: 'Game Dev', ice: 'Life is just a simulation anyway 🎮' },
+    { name: 'Aria Chen', college: 'MIT', program: 'Computer Science', techStack: 'React, Node, Typescript', designation: 'CS Junior', ice: 'I debug code in my dreams 💭' },
+    { name: 'Dev Sharma', college: 'IIT Delhi', program: 'Electronics', techStack: 'Python, PyTorch', designation: 'ML Engineer', ice: 'My neural nets have feelings too 🤖' },
+    { name: 'Luna Park', college: 'Stanford', program: 'Human-Computer Interaction', techStack: 'Figma, Swift', designation: 'Design Lead', ice: 'Pixels are my love language 🎨' },
+    { name: 'Kai Tanaka', college: 'Tokyo U', program: 'Software Engineering', techStack: 'Vue, Go', designation: 'Full Stack Dev', ice: 'I speak fluent JavaScript ☕' },
+    { name: 'Zara Ahmed', college: 'Oxford', program: 'Mathematics', techStack: 'R, SQL', designation: 'Data Scientist', ice: 'I find patterns in chaos 📊' },
+    { name: 'Rio Santos', college: 'USP Brazil', program: 'Game Design', techStack: 'Unity, C#', designation: 'Game Dev', ice: 'Life is just a simulation anyway 🎮' },
   ];
 
   return names.map((n, i) => {
@@ -80,6 +83,8 @@ function generateDemoPlayers(eventId: string): PlayerProfile[] {
       uid,
       displayName: n.name,
       college: n.college,
+      program: n.program,
+      techStack: n.techStack,
       designation: n.designation,
       iceBreaker: n.ice,
       creature,
@@ -131,6 +136,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       uid: state.uid,
       displayName: data.displayName,
       college: data.college,
+      program: data.program,
+      techStack: data.techStack,
       designation: data.designation,
       iceBreaker: data.iceBreaker,
       creature,
@@ -143,6 +150,17 @@ export const useGameStore = create<GameState>((set, get) => ({
       profile,
       profileCompleted: true,
       players: [...state.players, profile],
+    });
+  },
+
+  updateProfile: (data) => {
+    set((state) => {
+      if (!state.profile) return state;
+      const updatedProfile = { ...state.profile, ...data };
+      return {
+        profile: updatedProfile,
+        players: state.players.map((p) => p.uid === state.uid ? updatedProfile : p),
+      };
     });
   },
 

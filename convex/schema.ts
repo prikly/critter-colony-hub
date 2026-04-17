@@ -10,6 +10,8 @@ export default defineSchema({
     eventId: v.string(),                 // room/event they belong to
     displayName: v.optional(v.string()),
     college: v.optional(v.string()),
+    program: v.optional(v.string()),
+    techStack: v.optional(v.string()),
     designation: v.optional(v.string()),
     iceBreaker: v.optional(v.string()),
     creatureIndex: v.number(),           // 0–15, deterministic from tokenIdentifier

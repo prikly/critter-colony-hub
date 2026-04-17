@@ -77,6 +77,8 @@ export const updateProfile = mutation({
   args: {
     displayName: v.string(),
     college: v.string(),
+    program: v.optional(v.string()),
+    techStack: v.optional(v.string()),
     designation: v.string(),
     iceBreaker: v.string(),
     creatureName: v.string(),
@@ -102,6 +104,8 @@ export const updateProfile = mutation({
     await ctx.db.patch(user._id, {
       displayName: args.displayName,
       college: args.college,
+      program: args.program,
+      techStack: args.techStack,
       designation: args.designation,
       iceBreaker: args.iceBreaker,
       creatureName: args.creatureName,

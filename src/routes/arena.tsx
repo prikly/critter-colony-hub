@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGameStore } from '@/store/gameStore';
-import { CreatureCard, Leaderboard } from '@/features/arena';
+import { useGameStore, PlayerProfile } from '@/store/gameStore';
+import { CreatureCard, Leaderboard, EditProfileModal, ViewProfileModal } from '@/features/arena';
 import { TriviaGame, WordChainGame } from '@/features/games';
 import { Badge } from '@/components/ui';
 
@@ -24,6 +25,9 @@ const pageVariants = {
 function ArenaPage() {
   const navigate = useNavigate();
   const { isLoggedIn, profileCompleted, players, activeTab, setActiveTab, currentGame, setCurrentGame, profile, uid } = useGameStore();
+
+  const [isEditProfileOpen, setEditProfileOpen] = useState(false);
+  const [viewProfilePlayer, setViewProfilePlayer] = useState<PlayerProfile | null>(null);
 
   if (!isLoggedIn || !profileCompleted) {
     navigate({ to: '/' });
@@ -54,13 +58,16 @@ function ArenaPage() {
             {players.length} online
           </Badge>
           {profile && (
-            <motion.span
-              className="text-xl"
+            <motion.button
+              onClick={() => setEditProfileOpen(true)}
+              className="text-xl w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors"
               animate={{ y: [0, -3, 0] }}
               transition={{ repeat: Infinity, duration: 2 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
             >
               {profile.creature.emoji}
-            </motion.span>
+            </motion.button>
           )}
         </div>
       </motion.header>
@@ -108,6 +115,7 @@ function ArenaPage() {
                       xp={p.xp}
                       isOwn={p.uid === uid}
                       index={i}
+                      onClick={() => setViewProfilePlayer(p)}
                     />
                   ))}
                 </div>
@@ -227,6 +235,9 @@ function ArenaPage() {
           })}
         </div>
       </nav>
+
+      <EditProfileModal isOpen={isEditProfileOpen} onClose={() => setEditProfileOpen(false)} />
+      <ViewProfileModal player={viewProfilePlayer} onClose={() => setViewProfilePlayer(null)} />
     </div>
   );
 }
